@@ -130,6 +130,8 @@ can contain duplicates if there are multiple edges connecting the
     (remhash edge target-vertex-map)))
     
 (defmethod add-edge ((source t) (target t) (edge t) (graph simple-graph))
+  (add-vertex source graph)
+  (add-vertex target graph)
   (with-slots (outgoing-edge-map incoming-edge-map source-vertex-map target-vertex-map test-fn) graph
     (let ((edge (or edge (make-array 2 :initial-contents (list source target)))))
       (pushnew edge (gethash target incoming-edge-map (list)) :test test-fn)
