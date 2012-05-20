@@ -1,4 +1,4 @@
-;;;; wo-graph.lisp
+;;; wo-graph.lisp
 
 (in-package #:wo-graph)
 
@@ -10,6 +10,7 @@
 (defgeneric outgoing-edges (vertex graph)
   (:documentation "A list of all edges which have as source vertex
   `vertex' in the `graph'."))
+
 (defgeneric incoming-edges (vertex graph)
   (:documentation "A list of all edges which have as target vertex
   `vertex' in the `graph'."))
@@ -19,6 +20,7 @@
 `graph'.  Note that for all normal graphs this will return a list of
 length one.  However for hyper graphs (?)  this can return more than
 one element."))
+
 (defgeneric target-vertex (edge graph)
   (:documentation "A list of target vertices for the `edge' in the
 `graph'.  Note that for all normal graphs this will return a list of
@@ -31,6 +33,7 @@ one element."))
 which has `vertex' as a target s and `a' as a source.  The collection
 can contain duplicates if there are multiple edges connecting the
 source with `vertex'."))
+
 (defgeneric targets-of-vertex (vertex graph)
   (:documentation "A list of all target vertices of `vertex' in
 `graph'.  A vertex `b' is a target of `vertex' if there is an edge
@@ -39,9 +42,17 @@ can contain duplicates if there are multiple edges connecting the
 `vertex' with a target."))
 (defgeneric neighbors-of-vertex (vertex graph))
 
-(defgeneric get-vertex-marker (graph))
+(defgeneric get-vertex-marker (graph)
+  (:documentation "Returns a vertex marker for the graph.  A vertex
+  marker is a data structure that associates auxiliary data with
+  vertices of `graph'.  The twomethods that are available on a vertex
+  marker are `get-mark' and `(setf get-mark)'."))
 
-(defgeneric get-mark (object marker &optional default-value))
+(defgeneric get-mark (object marker &optional default-value)
+  (:documentation "Gets the associated data of `object' (typically a
+  vertex of a graph) by the datastructure `marker'.  If it is not
+  found it will `default-value' (or nil if the default value is not
+  specified."))
 (defgeneric update-mark (object marker &rest default-and-value))
 (defsetf get-mark update-mark)
 
