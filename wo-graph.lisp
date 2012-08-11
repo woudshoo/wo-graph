@@ -92,7 +92,7 @@ can contain duplicates if there are multiple edges connecting the
 (defmethod initialize-instance :after  ((instance simple-graph) 
 					&key (test nil)
 					  (vertex-test (or test #'eql))
-					  (edge-test (or test #'eql))
+					  (edge-test (or test #'equalp))
 					  &allow-other-keys)
   (with-slots (outgoing-edge-map incoming-edge-map 
 				 source-vertex-map target-vertex-map)
