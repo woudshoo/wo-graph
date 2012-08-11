@@ -68,7 +68,8 @@ can contain duplicates if there are multiple edges connecting the
 ;; API High level manipulating graph
 
 (defgeneric copy (graph))
-(defgeneric test-fn (graph))
+(defgeneric edge-test (graph))
+(defgeneric vertex-test (graph))
 
 ;;;
 ;;; Implementation
@@ -78,7 +79,8 @@ can contain duplicates if there are multiple edges connecting the
    incoming-edge-map
    source-vertex-map
    target-vertex-map
-   (test-fn :accessor test-fn)))
+   (edge-test :accessor edge-test)
+   (vertex-test :accessor vertex-test)))
 
 (defclass marker ()
   ((table :accessor table :initarg :with-table)))
@@ -87,14 +89,21 @@ can contain duplicates if there are multiple edges connecting the
 (defclass edge-marker (marker) ())
 
 
-(defmethod initialize-instance :after  ((instance simple-graph) &key (test #'eql) &allow-other-keys)
-  (with-slots (outgoing-edge-map incoming-edge-map source-vertex-map target-vertex-map test-fn)
+(defmethod initialize-instance :after  ((instance simple-graph) 
+					&key (test nil)
+					  (vertex-test (or test #'eql))
+					  (edge-test (or test #'eql))
+					  &allow-other-keys)
+  (with-slots (outgoing-edge-map incoming-edge-map 
+				 source-vertex-map target-vertex-map)
       instance
-    (setf test-fn test)
-    (setf outgoing-edge-map (make-hash-table :test test))
-    (setf incoming-edge-map (make-hash-table :test test))
-    (setf source-vertex-map (make-hash-table :test test))
-    (setf target-vertex-map (make-hash-table :test test))))
+    (setf (slot-value instance 'edge-test) edge-test)
+    (setf (slot-value instance 'vertex-test) vertex-test)
+
+    (setf outgoing-edge-map (make-hash-table :test edge-test))
+    (setf incoming-edge-map (make-hash-table :test edge-test))
+    (setf source-vertex-map (make-hash-table :test vertex-test))
+    (setf target-vertex-map (make-hash-table :test vertex-test))))
 
 
 (defun copy-hash-table-slot (target source slot)
@@ -102,7 +111,9 @@ can contain duplicates if there are multiple edges connecting the
 	(copy-hash-table (slot-value source slot))))
 
 (defmethod copy ((instance simple-graph))
-  (let ((result (make-instance (class-of instance) :test (slot-value instance 'test-fn))))
+  (let ((result (make-instance (class-of instance) 
+			       :edge-test (edge-test instance)
+			       :vertex-test (vertex-test instance))))
     (copy-hash-table-slot result instance 'outgoing-edge-map)
     (copy-hash-table-slot result instance 'incoming-edge-map)
     (copy-hash-table-slot result instance 'source-vertex-map)
@@ -110,8 +121,8 @@ can contain duplicates if there are multiple edges connecting the
     result))
       
 (defmethod get-vertex-marker ((graph simple-graph))
-  (with-slots (test-fn) graph
-    (make-instance 'vertex-marker :with-table (make-hash-table :test test-fn))))
+  (make-instance 'vertex-marker 
+		 :with-table  (make-hash-table :test (vertex-test graph))))
 
 (defmethod get-mark ((object t) (marker vertex-marker) &optional default-value)
   (gethash object (table marker) default-value))
@@ -143,12 +154,14 @@ can contain duplicates if there are multiple edges connecting the
 (defmethod add-edge ((source t) (target t) (edge t) (graph simple-graph))
   (add-vertex source graph)
   (add-vertex target graph)
-  (with-slots (outgoing-edge-map incoming-edge-map source-vertex-map target-vertex-map test-fn) graph
+  (with-slots (outgoing-edge-map incoming-edge-map source-vertex-map target-vertex-map 
+				 edge-test vertex-test) 
+      graph
     (let ((edge (or edge (make-array 2 :initial-contents (list source target)))))
-      (pushnew edge (gethash target incoming-edge-map (list)) :test test-fn)
-      (pushnew edge (gethash source outgoing-edge-map (list)) :test test-fn)
-      (pushnew source (gethash edge source-vertex-map (list)) :test test-fn)
-      (pushnew target (gethash edge target-vertex-map (list)) :test test-fn))))
+      (pushnew edge (gethash target incoming-edge-map (list)) :test edge-test)
+      (pushnew edge (gethash source outgoing-edge-map (list)) :test edge-test)
+      (pushnew source (gethash edge source-vertex-map (list)) :test vertex-test)
+      (pushnew target (gethash edge target-vertex-map (list)) :test vertex-test))))
 
 (defmethod all-vertices ((graph simple-graph))
   (with-slots (incoming-edge-map) graph
