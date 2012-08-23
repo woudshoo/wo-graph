@@ -51,8 +51,8 @@ can contain duplicates if there are multiple edges connecting the
 (defgeneric get-mark (object marker &optional default-value)
   (:documentation "Gets the associated data of `object' (typically a
   vertex of a graph) by the datastructure `marker'.  If it is not
-  found it will `default-value' (or nil if the default value is not
-  specified."))
+  found it will return `default-value' (or nil if the default value is
+  not specified."))
 (defgeneric update-mark (object marker &rest default-and-value))
 (defsetf get-mark update-mark)
 
