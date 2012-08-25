@@ -38,6 +38,9 @@ should only use a well defined interface to query and manipulate graphs.
 This package defines an interface for graph algorithms to use and
 an interface for graph data structures to implement.
 
+For more interesting functions look at the
+@url{http://github.com/woudshoo/wo-graph-functions/} project.
+That project contains actual functions for graph manipulations.
 
 @contents
 
@@ -48,7 +51,7 @@ an interface for graph data structures to implement.
 * Function Index::
 @end menu
 
-@node Overview, Graph Algorithmic Interface, Top, Top
+@node Overview, Data Structure Interface, Top, Top
 @chapter Overview
 
 When trying to decouple the implementation of graph algorithms from the
@@ -65,35 +68,107 @@ In addition to the interface, this package has a simple implementation
 of a graph data structure, so it is ready to use.
 
 
-@node Graph Algorithmic Interface, Data Structure Interface, Overview, Top
+@node Data Structure Interface, Graph Algorithmic Interface, Overview, Top
+@chapter Data Structure Interface
+
+Implementing a graph datastructure, such as the @code{simple-graph} 
+supplied in this package, consists of implementing a list of about 12
+generic functions, dealing with querying and modifying the graph.
+
+At the moment there is no standardized way on how to create an empty graph.
+That is left undefined.
+
+The list of methods to implement are divided into 4 categories:
+
+@menu 
+* Vertices::
+* Edges::
+* Marker Functions::
+* Miscellaneous Functions::    
+@end menu
+
+
+@node Vertices, Edges, Data Structure Interface, Data Structure Interface
+@section Vertices
+
+The graph implementation can decide which kind of objects represent
+vertices.  There are no constraint from the API on the type of object
+used to represent a vertex.  Of course the implementation of the 
+vertex and edge methods need to be consistent.  That is, if you have
+a graph like
+
+@example
+  A --[E]--> B.
+@end example
+
+The source vertex of [E] should be the same as vertex A.
+Also the outgoing edge of A should be the same as [E].
+
+Now the `same' is defined loosely.  The algorithms building on this
+should never compare vertices for sameness.  The only constraint on
+sameness is that the graph structures implementing this interface deals
+with them in a consistent and sane matter.  So in the example above,
+adding the source vertex of [E] to the graph should do nothing, because
+the vertex is already present.
+
+@menu
+* Vertex Functions::
+@end menu
+
+@node Vertex Functions,  , Vertices, Vertices
+@subsection Vertex Functions
+
+@include include/fun-wo-graph-all-vertices.texinfo
+
+@include include/fun-wo-graph-add-vertex.texinfo
+@include include/fun-wo-graph-remove-vertex.texinfo
+
+@include include/fun-wo-graph-outgoing-edges.texinfo
+@include include/fun-wo-graph-incoming-edges.texinfo
+
+
+
+@node Edges, Marker Functions, Vertices, Data Structure Interface
+@section Edges
+
+What are considered edges in the graph is up to the implementation of
+the graph data structure.  The only constraint is that the type of edges
+should not be @code{cons}.  So @code{(type edge 'cons) => nil}.
+
+@menu
+* Edge Functions::
+@end menu
+
+@node Edge Functions,  , Edges, Edges
+@subsection Edge Functions
+
+@include include/fun-wo-graph-add-edge.texinfo
+@include include/fun-wo-graph-remove-edge.texinfo
+
+@include include/fun-wo-graph-source-vertex.texinfo
+@include include/fun-wo-graph-target-vertex.texinfo
+
+@node Marker Functions, Miscellaneous Functions, Edges, Data Structure Interface
+@section Marker Functions
+
+@include include/fun-wo-graph-get-vertex-marker.texinfo
+@include include/fun-wo-graph-get-mark.texinfo
+
+@node Miscellaneous Functions,  , Marker Functions, Data Structure Interface
+@section Miscellaneous Functions
+
+@include include/fun-wo-graph-copy.texinfo
+
+
+@node Graph Algorithmic Interface, Function Index, Data Structure Interface, Top
 @chapter Graph Algorithmic Interface
 
 @include include/fun-wo-graph-sources-of-vertex.texinfo
 @include include/fun-wo-graph-targets-of-vertex.texinfo
 @include include/fun-wo-graph-neighbors-of-vertex.texinfo
 
-@node Data Structure Interface, Function Index, Graph Algorithmic Interface, Top
-@chapter Data Structure Interface
 
-
-
-
-@include include/fun-wo-graph-copy.texinfo
-@include include/fun-wo-graph-get-vertex-marker.texinfo
-@include include/fun-wo-graph-get-mark.texinfo
-@include include/fun-wo-graph-add-vertex.texinfo
-@include include/fun-wo-graph-remove-vertex.texinfo
-@include include/fun-wo-graph-remove-edge.texinfo
-@include include/fun-wo-graph-add-edge.texinfo
-@include include/fun-wo-graph-all-vertices.texinfo
-@include include/fun-wo-graph-outgoing-edges.texinfo
-@include include/fun-wo-graph-incoming-edges.texinfo
-@include include/fun-wo-graph-source-vertex.texinfo
-@include include/fun-wo-graph-target-vertex.texinfo
-
-
-
-@node Function Index,  , Data Structure Interface, Top
+@node Function Index,  , Graph Algorithmic Interface, Top
 @comment  node-name,  next,  previous,  up
 @appendix Function Index
 
