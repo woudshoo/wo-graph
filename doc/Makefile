@@ -27,3 +27,9 @@ pdf:  wo-graph.pdf
 info: wo-graph.info
 
 
+pages: html
+	git checkout gh-pages
+	cp wo-graph.html ../index.html
+	git commit -a -C master
+	rm ../index.html
+	git checkout -f master
