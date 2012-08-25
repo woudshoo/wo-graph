@@ -4,6 +4,11 @@
 @settitle Wims Simple Graph Infrastructure
 @c %**end of header
 
+@dircategory Software development
+@direntry
+* WO-Graph: (wo-graph). Basic Graph Infrastructure (for Common Lisp)
+@end direntry
+
 @copying
 Copyright @copyright{} 2012, Willem Rein Oudshoorn
 All rights reserved.

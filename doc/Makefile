@@ -33,3 +33,7 @@ pages: html
 	git commit -a -C master
 	rm ../index.html
 	git checkout -f master
+
+install-info: info
+	cp wo-graph.info ~/share/info/
+	install-info wo-graph.info ~/share/info/dir
