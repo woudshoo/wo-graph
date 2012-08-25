@@ -65,6 +65,8 @@ an interface for graph data structures to implement.
 <a href="http://github.com/woudshoo/wo-graph-functions/">http://github.com/woudshoo/wo-graph-functions/</a> project. 
 That project contains actual functions for graph manipulations.
 
+   <p>the source code of this project is available at
+<a href="http://github.com/woudshoo/wo-graph/">http://github.com/woudshoo/wo-graph/</a>. 
 <div class="contents">
 <h2>Table of Contents</h2>
 <ul>
@@ -80,19 +82,26 @@ That project contains actual functions for graph manipulations.
 <ul>
 <li><a href="#Edge-Functions">2.2.1 Edge Functions</a>
 </li></ul>
-<li><a href="#Marker-Functions">2.3 Marker Functions</a>
+<li><a href="#Markers">2.3 Markers</a>
+<ul>
+<li><a href="#Marker-Functions">2.3.1 Marker Functions</a>
+</li></ul>
 <li><a href="#Miscellaneous-Functions">2.4 Miscellaneous Functions</a>
 </li></ul>
 <li><a name="toc_Graph-Algorithmic-Interface" href="#Graph-Algorithmic-Interface">3 Graph Algorithmic Interface</a>
+<li><a name="toc_Simple-Graph" href="#Simple-Graph">4 A default implementation simple-graph</a>
 <li><a name="toc_Function-Index" href="#Function-Index">Appendix A Function Index</a>
 </li></ul>
 </div>
+
+
 
 <ul class="menu">
 <li><a accesskey="1" href="#Overview">Overview</a>
 <li><a accesskey="2" href="#Graph-Algorithmic-Interface">Graph Algorithmic Interface</a>
 <li><a accesskey="3" href="#Data-Structure-Interface">Data Structure Interface</a>
 <li><a accesskey="4" href="#Function-Index">Function Index</a>
+<li><a accesskey="5" href="#Simple-Graph">Simple Graph</a>:  A default implementation
 </ul>
 
 <div class="node">
@@ -142,7 +151,7 @@ That is left undefined.
 <ul class="menu">
 <li><a accesskey="1" href="#Vertices">Vertices</a>
 <li><a accesskey="2" href="#Edges">Edges</a>
-<li><a accesskey="3" href="#Marker-Functions">Marker Functions</a>
+<li><a accesskey="3" href="#Markers">Markers</a>
 <li><a accesskey="4" href="#Miscellaneous-Functions">Miscellaneous Functions</a>
 </ul>
 
@@ -233,7 +242,7 @@ All edges incident to the <code>vertex</code> are removed as well.
 <div class="node">
 <p><hr>
 <a name="Edges"></a>
-Next:&nbsp;<a rel="next" accesskey="n" href="#Marker-Functions">Marker Functions</a>,
+Next:&nbsp;<a rel="next" accesskey="n" href="#Markers">Markers</a>,
 Previous:&nbsp;<a rel="previous" accesskey="p" href="#Vertices">Vertices</a>,
 Up:&nbsp;<a rel="up" accesskey="u" href="#Data-Structure-Interface">Data Structure Interface</a>
 
@@ -315,14 +324,44 @@ one element.
 
 <div class="node">
 <p><hr>
-<a name="Marker-Functions"></a>
+<a name="Markers"></a>
 Next:&nbsp;<a rel="next" accesskey="n" href="#Miscellaneous-Functions">Miscellaneous Functions</a>,
 Previous:&nbsp;<a rel="previous" accesskey="p" href="#Edges">Edges</a>,
 Up:&nbsp;<a rel="up" accesskey="u" href="#Data-Structure-Interface">Data Structure Interface</a>
 
 </div>
 
-<h3 class="section">2.3 Marker Functions</h3>
+<h3 class="section">2.3 Markers</h3>
+
+<p>Graph functions typically need to store temporary data with vertices (or edges). 
+For this the API provides markers.  A marker is explicitly requested from the graph
+and can be used to attach data to a vertex.  Like
+
+<pre class="lisp">         ;; Creating the marker (assuming *graph* is a graph)
+         (set *marker* (get-vertex-marker *graph*))
+     
+         ;; Setting a mark for vertex
+         (setf (get-mark vertex *marker) "A mark")
+     
+         ;; Retrieving a mark
+         (get-mark vertex *marker*)
+         ==&gt;  "A mark"
+</pre>
+   <p>You can create and use different markers simultaneously.
+
+<ul class="menu">
+<li><a accesskey="1" href="#Marker-Functions">Marker Functions</a>
+</ul>
+
+<div class="node">
+<p><hr>
+<a name="Marker-Functions"></a>
+Previous:&nbsp;<a rel="previous" accesskey="p" href="#Markers">Markers</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="#Markers">Markers</a>
+
+</div>
+
+<h4 class="subsection">2.3.1 Marker Functions</h4>
 
 <p><a name="index-get_002dvertex_002dmarker-19"></a><a name="Generic_002dFunction-get_002dvertex_002dmarker"></a>
 
@@ -349,7 +388,7 @@ Up:&nbsp;<a rel="up" accesskey="u" href="#Data-Structure-Interface">Data Structu
 <div class="node">
 <p><hr>
 <a name="Miscellaneous-Functions"></a>
-Previous:&nbsp;<a rel="previous" accesskey="p" href="#Marker-Functions">Marker Functions</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="#Markers">Markers</a>,
 Up:&nbsp;<a rel="up" accesskey="u" href="#Data-Structure-Interface">Data Structure Interface</a>
 
 </div>
@@ -369,7 +408,7 @@ with the original graph, but all manipulations with <code>add-vertex</code>, <co
 <div class="node">
 <p><hr>
 <a name="Graph-Algorithmic-Interface"></a>
-Next:&nbsp;<a rel="next" accesskey="n" href="#Function-Index">Function Index</a>,
+Next:&nbsp;<a rel="next" accesskey="n" href="#Simple-Graph">Simple Graph</a>,
 Previous:&nbsp;<a rel="previous" accesskey="p" href="#Data-Structure-Interface">Data Structure Interface</a>,
 Up:&nbsp;<a rel="up" accesskey="u" href="#Top">Top</a>
 
@@ -411,8 +450,69 @@ so this is equivalent of the union (with duplicates) of <code>sources-of-vertex<
 
 <div class="node">
 <p><hr>
-<a name="Function-Index"></a>
+<a name="Simple-Graph"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="#Function-Index">Function Index</a>,
 Previous:&nbsp;<a rel="previous" accesskey="p" href="#Graph-Algorithmic-Interface">Graph Algorithmic Interface</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="#Top">Top</a>
+
+</div>
+
+<h2 class="chapter">4 A default implementation simple-graph</h2>
+
+<p><a name="index-simple_002dgraph-31"></a><a name="Class-simple_002dgraph"></a>
+
+<div class="defun">
+&mdash; Class: <b>simple-graph</b><var><a name="index-simple_002dgraph-32"></a></var><br>
+<blockquote><p>Class precedence list: <code>simple-graph, standard-object, t</code>
+
+        <p>Slots:
+          <ul>
+<li><code>outgoing-edge-map</code> &mdash;
+
+          <p>Hash table containing a mapping from vertex to outgoing edges
+<li><code>incoming-edge-map</code> &mdash;
+
+          <p>Hash table containing a mapping from vertex to outgoing edges
+<li><code>source-vertex-map</code> &mdash;
+
+          <p>Hash table containing a mapping from edge to source vertex
+<li><code>target-vertex-map</code> &mdash;
+
+          <p>Hash table containing a mapping from edge to target vertex
+<li><code>edge-test</code> &mdash; reader: <code>wo-graph::edge-test<!-- /@w --></code>; writer: <code>(setf&nbsp;wo-graph::edge-test)<!-- /@w --></code>
+
+          <p>Test function for the hash tables <code>source-vertex-map</code> and <code>target-vertex-map</code>
+<li><code>vertex-test</code> &mdash; reader: <code>wo-graph::vertex-test<!-- /@w --></code>; writer: <code>(setf&nbsp;wo-graph::vertex-test)<!-- /@w --></code>
+
+          <p>Test function for the hash tables <code>outgoing-edge-map</code> <code>incoming-edge-map</code>
+</ul>
+
+        <p>A hash table based implementation of the wo-graph <code>api</code>. 
+The following arguments can be supplied when creating an instance:
+
+          <ul>
+<li><code>:vertex-test</code> a test function to see if two vertices are the same. 
+               this function needs to be a hash table test function. 
+               So typically it should be one of #'eq #'eql, #'equal or #equalp.
+
+          <p>The value defaults to #'eql.
+
+          <p>However the <code>:vertex-test</code> argument is not present and a <code>:test</code> argument is given,
+               the value given by the <code>:test</code> argument is used.
+
+          <li><code>:edge-test</code>   This is similar to the <code>:vertex-test</code> argument, except that the default argument
+               is #'equalp.
+
+          <li><code>:test</code>        If this argument is provided it will override the defaults of <code>:vertex-test</code> and <code>:edge-test</code>. 
+               However it only overrides the default value for <code>:vertex-test</code> and <code>:edge-test</code>,
+               so if they (:VERTEX-TEST, :EDGE-TEST) are specified, the specified value is in effect. 
+</ul>
+        </p></blockquote></div>
+
+<div class="node">
+<p><hr>
+<a name="Function-Index"></a>
+Previous:&nbsp;<a rel="previous" accesskey="p" href="#Simple-Graph">Simple Graph</a>,
 Up:&nbsp;<a rel="up" accesskey="u" href="#Top">Top</a>
 
 </div>
