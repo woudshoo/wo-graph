@@ -42,8 +42,8 @@ can contain duplicates if there are multiple edges connecting the
 VERTEX with a target."))
 
 (defgeneric neighbors-of-vertex (vertex graph)
-  (:documentation "A list of all neighbors of VERTEX.  
-A neighbor is defined as either a target or a source for the VERTEX, 
+  (:documentation "A list of all neighbors of VERTEX.
+A neighbor is defined as either a target or a source for the VERTEX,
 so this is equivalent of the union (with duplicates) of SOURCES-OF-VERTEX and
 TARGETS-OF-VERTEX."))
 
@@ -89,14 +89,14 @@ It is important the realize a few important facts
   the default edge once.
 
 - If multiple edges need to be added between the same source and
-  target, they need to have different edge arguments.
-"))
+  target, they need to have different edge arguments."))
 
 (defgeneric remove-vertex (vertex graph)
-  (:documentation "Removes the VERTEX from the graph. 
+  (:documentation "Removes the VERTEX from the graph.
 All edges incident to the VERTEX are removed as well."))
+
 (defgeneric remove-edge (edge graph)
-  (:documentation "Removes the EDGE from the graph.  
+  (:documentation "Removes the EDGE from the graph.
 No vertices are removed."))
 
 ;; API High level manipulating graph
@@ -113,12 +113,32 @@ REMOVE-VERTEX and REMOVE-EDGE on the copy will not change the original graph.
 ;;; Implementation
 ;;;
 (defclass simple-graph ()
-  (outgoing-edge-map
-   incoming-edge-map
-   source-vertex-map
-   target-vertex-map
-   (edge-test :accessor edge-test)
-   (vertex-test :accessor vertex-test)))
+  ((outgoing-edge-map :documentation "Hash table containing a mapping from vertex to outgoing edges")
+   (incoming-edge-map :documentation "Hash table containing a mapping from vertex to outgoing edges")
+   (source-vertex-map :documentation "Hash table containing a mapping from edge to source vertex")
+   (target-vertex-map :documentation "Hash table containing a mapping from edge to target vertex")
+   (edge-test :accessor edge-test :documentation "Test function for the hash tables SOURCE-VERTEX-MAP and TARGET-VERTEX-MAP")
+   (vertex-test :accessor vertex-test :documentation "Test function for the hash tables OUTGOING-EDGE-MAP INCOMING-EDGE-MAP"))
+  (:documentation
+"A hash table based implementation of the wo-graph API.
+The following arguments can be supplied when creating an instance:
+
+- :VERTEX-TEST a test function to see if two vertices are the same.
+               this function needs to be a hash table test function.
+               So typically it should be one of #'eq #'eql, #'equal or #equalp.
+
+               The value defaults to #'eql.
+
+               However the :VERTEX-TEST argument is not present and a :TEST argument is given,
+               the value given by the :TEST argument is used.
+
+- :EDGE-TEST   This is similar to the :VERTEX-TEST argument, except that the default argument
+               is #'equalp.
+
+
+- :TEST        If this argument is provided it will override the defaults of :VERTEX-TEST and :EDGE-TEST.
+               However it only overrides the default value for :VERTEX-TEST and :EDGE-TEST,
+               so if they (:VERTEX-TEST, :EDGE-TEST) are specified, the specified value is in effect."))
 
 (defclass marker ()
   ((table :accessor table :initarg :with-table)))
@@ -127,12 +147,13 @@ REMOVE-VERTEX and REMOVE-EDGE on the copy will not change the original graph.
 (defclass edge-marker (marker) ())
 
 
-(defmethod initialize-instance :after  ((instance simple-graph) 
+(defmethod initialize-instance :after  ((instance simple-graph)
 					&key (test nil)
 					  (vertex-test (or test #'eql))
 					  (edge-test (or test #'equalp))
 					  &allow-other-keys)
-  (with-slots (outgoing-edge-map incoming-edge-map 
+
+  (with-slots (outgoing-edge-map incoming-edge-map
 				 source-vertex-map target-vertex-map)
       instance
     (setf (slot-value instance 'edge-test) edge-test)
@@ -149,7 +170,7 @@ REMOVE-VERTEX and REMOVE-EDGE on the copy will not change the original graph.
 	(copy-hash-table (slot-value source slot))))
 
 (defmethod copy ((instance simple-graph))
-  (let ((result (make-instance (class-of instance) 
+  (let ((result (make-instance (class-of instance)
 			       :edge-test (edge-test instance)
 			       :vertex-test (vertex-test instance))))
     (copy-hash-table-slot result instance 'outgoing-edge-map)
@@ -157,9 +178,9 @@ REMOVE-VERTEX and REMOVE-EDGE on the copy will not change the original graph.
     (copy-hash-table-slot result instance 'source-vertex-map)
     (copy-hash-table-slot result instance 'target-vertex-map)
     result))
-      
+
 (defmethod get-vertex-marker ((graph simple-graph))
-  (make-instance 'vertex-marker 
+  (make-instance 'vertex-marker
 		 :with-table  (make-hash-table :test (vertex-test graph))))
 
 (defmethod get-mark ((object t) (marker vertex-marker) &optional default-value)
@@ -179,7 +200,7 @@ REMOVE-VERTEX and REMOVE-EDGE on the copy will not change the original graph.
 (defmethod remove-vertex ((vertex t) (graph simple-graph))
     (loop :for edge :in (outgoing-edges vertex graph) :do (remove-edge edge graph))
     (loop :for edge :in (incoming-edges vertex graph) :do (remove-edge edge graph))
-    
+
     (with-slots (outgoing-edge-map incoming-edge-map) graph
       (remhash vertex outgoing-edge-map)
       (remhash vertex incoming-edge-map)))
@@ -188,12 +209,12 @@ REMOVE-VERTEX and REMOVE-EDGE on the copy will not change the original graph.
   (with-slots (source-vertex-map target-vertex-map) graph
     (remhash edge source-vertex-map)
     (remhash edge target-vertex-map)))
-    
+
 (defmethod add-edge ((source t) (target t) (edge t) (graph simple-graph))
   (add-vertex source graph)
   (add-vertex target graph)
-  (with-slots (outgoing-edge-map incoming-edge-map source-vertex-map target-vertex-map 
-				 edge-test vertex-test) 
+  (with-slots (outgoing-edge-map incoming-edge-map source-vertex-map target-vertex-map
+				 edge-test vertex-test)
       graph
     (let ((edge (or edge (make-array 2 :initial-contents (list source target)))))
       (pushnew edge (gethash target incoming-edge-map (list)) :test edge-test)
@@ -231,7 +252,7 @@ REMOVE-VERTEX and REMOVE-EDGE on the copy will not change the original graph.
      :append (source-vertex edge graph)))
 
 (defmethod target-vertex ((edge-list list) (graph t))
-  (loop :for edge :in edge-list 
+  (loop :for edge :in edge-list
      :append (target-vertex edge graph)))
 
 (defmethod targets-of-vertex ((vertex t) (graph t))
