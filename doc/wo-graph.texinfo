@@ -1,0 +1,104 @@
+\input texinfo
+@c %**start of header
+@setfilename wo-graph
+@settitle Wims Simple Graph Infrastructure
+@c %**end of header
+
+@copying
+Copyright @copyright{} 2012, Willem Rein Oudshoorn
+All rights reserved.
+
+The basic license is GPL version 3.0 or later. 
+However if you have a need for a different license,
+please ask me and I most likely will dual license it.
+@end copying
+
+@finalout
+@setcontentsaftertitlepage
+
+@titlepage
+@title WO-Graph
+@subtitle Wims Simple Graph Infrastructure
+@author Willem Rein Oudshoorn
+@page
+@vskip 0pt plus 1filll
+@insertcopying
+@end titlepage
+
+@include include/sb-texinfo.texinfo
+
+
+@node Top, Overview, (dir), (dir)
+@top Introduction
+
+Typically graph algorithms should not depend on the underlying
+implementation of a graph data structure.  The algorithms
+should only use a well defined interface to query and manipulate graphs.
+
+This package defines an interface for graph algorithms to use and
+an interface for graph data structures to implement.
+
+
+@contents
+
+@menu
+* Overview::
+* Graph Algorithmic Interface::
+* Data Structure Interface::
+* Function Index::
+@end menu
+
+@node Overview, Graph Algorithmic Interface, Top, Top
+@chapter Overview
+
+When trying to decouple the implementation of graph algorithms from the
+implementation of graph data structures one faces two opposing forces.
+The graph algorithms are made easier if many primitive operations are
+provided by the graph data structures, but implementing a graph
+data structure becomes harder when more primitive operations need to be provided.
+
+This package tries to strike a balance between the two sides and provide
+an interface which is easy to implement for graph data structures and is rich enough
+to make implementing interesting graph algorithms comfortable.
+
+In addition to the interface, this package has a simple implementation
+of a graph data structure, so it is ready to use.
+
+
+@node Graph Algorithmic Interface, Data Structure Interface, Overview, Top
+@chapter Graph Algorithmic Interface
+
+@include include/fun-wo-graph-sources-of-vertex.texinfo
+@include include/fun-wo-graph-targets-of-vertex.texinfo
+@include include/fun-wo-graph-neighbors-of-vertex.texinfo
+
+@node Data Structure Interface, Function Index, Graph Algorithmic Interface, Top
+@chapter Data Structure Interface
+
+
+
+
+@include include/fun-wo-graph-copy.texinfo
+@include include/fun-wo-graph-get-vertex-marker.texinfo
+@include include/fun-wo-graph-get-mark.texinfo
+@include include/fun-wo-graph-add-vertex.texinfo
+@include include/fun-wo-graph-remove-vertex.texinfo
+@include include/fun-wo-graph-remove-edge.texinfo
+@include include/fun-wo-graph-add-edge.texinfo
+@include include/fun-wo-graph-all-vertices.texinfo
+@include include/fun-wo-graph-outgoing-edges.texinfo
+@include include/fun-wo-graph-incoming-edges.texinfo
+@include include/fun-wo-graph-source-vertex.texinfo
+@include include/fun-wo-graph-target-vertex.texinfo
+
+
+
+@node Function Index,  , Data Structure Interface, Top
+@comment  node-name,  next,  previous,  up
+@appendix Function Index
+
+@printindex fn
+
+
+@bye
+

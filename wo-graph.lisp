@@ -40,7 +40,12 @@ source with `vertex'."))
 which has `vertex' as a source s and `b' as a target.  The collection
 can contain duplicates if there are multiple edges connecting the
 `vertex' with a target."))
-(defgeneric neighbors-of-vertex (vertex graph))
+
+(defgeneric neighbors-of-vertex (vertex graph)
+  (:documentation "A list of all neighbors of `vertex'.  
+A neighbor is defined as either a target or a source for the `vertex', 
+so this is equivalent of the union (with duplicates) of `sources-of-vertex' and
+`targets-of-vertex'."))
 
 (defgeneric get-vertex-marker (graph)
   (:documentation "Returns a vertex marker for the graph.  A vertex
@@ -50,24 +55,44 @@ can contain duplicates if there are multiple edges connecting the
 
 (defgeneric get-mark (object marker &optional default-value)
   (:documentation "Gets the associated data of `object' (typically a
-  vertex of a graph) by the datastructure `marker'.  If it is not
+  vertex of a graph) by the data structure `marker'.  If it is not
   found it will return `default-value' (or nil if the default value is
-  not specified."))
+  not specified.
+
+  The result is a place which can be set with setf."))
 (defgeneric update-mark (object marker &rest default-and-value))
 (defsetf get-mark update-mark)
 
 
 ;; API For manipulating graph
 
-(defgeneric add-vertex (vertex graph))
-(defgeneric add-edge (source target edge graph))
+(defgeneric add-vertex (vertex graph)
+  (:documentation "Adds `vertex' to the `graph'.  If the same vertex
+ is added multiple times it will only be added to the graph once.
+ When two vertices are considered the same depends on the implementation
+ of the graph."))
+(defgeneric add-edge (source target edge graph)
+  (:documentation "Adds an edge connecting from `source' vertex to the `target' vertex.
+If `edge' is nil a new edge will be created.  If `edge' is non nil the edge argument will
+be added. If the same edge is added multiple times, only one edge is added.
 
-(defgeneric remove-vertex (vertex graph))
-(defgeneric remove-edge (edge graph))
+Note that by using different `edge' arguments you can add multiple edges between
+`source' and `target'."))
+
+(defgeneric remove-vertex (vertex graph)
+  (:documentation "Removes the `vertex' from the graph. 
+All edges incident to the `vertex' are removed as well."))
+(defgeneric remove-edge (edge graph)
+  (:documentation "Removes the `edge' from the graph.  
+No vertices are removed."))
 
 ;; API High level manipulating graph
 
-(defgeneric copy (graph))
+(defgeneric copy (graph)
+  (:documentation "Returns a copy of the `graph'.  This copy can share vertices and edges
+with the original graph, but all manipulations with `add-vertex', `add-edge'
+`remove-vertex' and `remove-edge' on the copy will not change the original graph.
+ (nor the other way around). "))
 (defgeneric edge-test (graph))
 (defgeneric vertex-test (graph))
 
