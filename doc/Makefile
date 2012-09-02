@@ -19,10 +19,15 @@ include-stamp: ../*.lisp ../*.asd
 	makeinfo --no-split $<
 
 
+%.neato.pdf: %.dot
+	neato -Tpdf -o $@ $<
+
+%.dot.pdf: %.dot
+	dot -Tpdf -o $@ $<
 
 html: wo-graph.html
 
-pdf:  wo-graph.pdf
+pdf:   wo-graph.pdf
 
 info: wo-graph.info
 
