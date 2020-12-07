@@ -159,10 +159,10 @@ The following arguments can be supplied when creating an instance:
     (setf (slot-value instance 'edge-test) edge-test)
     (setf (slot-value instance 'vertex-test) vertex-test)
 
-    (setf outgoing-edge-map (make-hash-table :test edge-test))
-    (setf incoming-edge-map (make-hash-table :test edge-test))
-    (setf source-vertex-map (make-hash-table :test vertex-test))
-    (setf target-vertex-map (make-hash-table :test vertex-test))))
+    (setf outgoing-edge-map (make-hash-table :test vertex-test))
+    (setf incoming-edge-map (make-hash-table :test vertex-test))
+    (setf source-vertex-map (make-hash-table :test edge-test))
+    (setf target-vertex-map (make-hash-table :test edge-test))))
 
 
 (defun copy-hash-table-slot (target source slot)
