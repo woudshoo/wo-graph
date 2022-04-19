@@ -3,4 +3,4 @@
 This projects provide a basic graph infrastructure, which is the building block
 of the [[http://github.com/woudshoo/wo-graph-functions/][wo graph functions]] project.
 
-For documentation of this project see [[http://woudshoo.github.com/wo-graph/index.html][WO Graph Documentation]].
+For documentation of this project see [[http://woudshoo.github.io/wo-graph/index.html][WO Graph Documentation]].
