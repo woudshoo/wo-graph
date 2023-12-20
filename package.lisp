@@ -22,7 +22,8 @@
    ;; Basic Marker
    #:get-vertex-marker
    #:get-mark
-
+   #:update-mark ;; for implementing own graph structures
+   
    ;; Derived
    #:sources-of-vertex
    #:targets-of-vertex

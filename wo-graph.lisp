@@ -50,7 +50,13 @@ TARGETS-OF-VERTEX."))
 (defgeneric get-vertex-marker (graph)
   (:documentation "Returns a vertex marker for the graph.  A vertex
   marker is a data structure that associates auxiliary data with
-  vertices of GRAPH.  The twomethods that are available on a vertex
+  vertices of GRAPH.  The two methods that are available on a vertex
+  marker are GET-MARK and `(setf get-mark)'."))
+
+(defgeneric get-edge-marker (graph)
+  (:documentation "Returns an edge marker for the graph.  A edge
+  marker is a data structure that associates auxiliary data with
+  edges of GRAPH.  The two methods that are available on a (edge/vertex)
   marker are GET-MARK and `(setf get-mark)'."))
 
 (defgeneric get-mark (object marker &optional default-value)
@@ -71,6 +77,7 @@ TARGETS-OF-VERTEX."))
  is added multiple times it will only be added to the graph once.
  When two vertices are considered the same depends on the implementation
  of the graph."))
+
 (defgeneric add-edge (source target edge graph)
   (:documentation "Adds an edge connecting from SOURCE vertex to the TARGET vertex.
 If EDGE is nil a default edge will be created.  If EDGE is not nil the edge argument will
@@ -146,6 +153,14 @@ The following arguments can be supplied when creating an instance:
 (defclass vertex-marker (marker) ())
 (defclass edge-marker (marker) ())
 
+(defun copy-hash-table-slot (target source slot)
+  (setf (slot-value target slot)
+	(copy-hash-table (slot-value source slot))))
+
+(defmethod copy ((marker marker))
+  (let ((result (make-instance (class-of marker))))
+    (copy-hash-table-slot result marker 'table)))
+
 
 (defmethod initialize-instance :after  ((instance simple-graph)
 					&key (test nil)
@@ -165,9 +180,6 @@ The following arguments can be supplied when creating an instance:
     (setf target-vertex-map (make-hash-table :test edge-test))))
 
 
-(defun copy-hash-table-slot (target source slot)
-  (setf (slot-value target slot)
-	(copy-hash-table (slot-value source slot))))
 
 (defmethod copy ((instance simple-graph))
   (let ((result (make-instance (class-of instance)
@@ -183,10 +195,14 @@ The following arguments can be supplied when creating an instance:
   (make-instance 'vertex-marker
 		 :with-table  (make-hash-table :test (vertex-test graph))))
 
-(defmethod get-mark ((object t) (marker vertex-marker) &optional default-value)
+(defmethod get-edge-marker ((graph simple-graph))
+  (make-instance 'edge-marker
+		 :with-table  (make-hash-table :test (edge-test graph))))
+
+(defmethod get-mark ((object t) (marker marker) &optional default-value)
   (gethash object (table marker) default-value))
 
-(defmethod update-mark ((object t) (marker vertex-marker) &rest default-and-value)
+(defmethod update-mark ((object t) (marker marker) &rest default-and-value)
   (setf (gethash object (table marker)) (car (last default-and-value))))
 
 (defmethod add-vertex ((vertex t) (graph simple-graph))
