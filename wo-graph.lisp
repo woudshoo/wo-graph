@@ -222,7 +222,17 @@ The following arguments can be supplied when creating an instance:
       (remhash vertex incoming-edge-map)))
 
 (defmethod remove-edge ((edge t) (graph simple-graph))
-  (with-slots (source-vertex-map target-vertex-map) graph
+  (with-slots (source-vertex-map target-vertex-map
+	       incoming-edge-map outgoing-edge-map)
+      graph
+    (loop :for source :in (source-vertex edge graph)
+	  :do
+	     (setf (gethash source outgoing-edge-map)
+		   (remove edge (gethash source outgoing-edge-map))))
+    (loop :for target :in (target-vertex edge graph)
+	  :do
+	     (setf (gethash target incoming-edge-map)
+		   (remove edge (gethash target incoming-edge-map))))
     (remhash edge source-vertex-map)
     (remhash edge target-vertex-map)))
 
